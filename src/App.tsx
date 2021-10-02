@@ -7,9 +7,11 @@ const fetchCofee = axios.get(`./.netlify/functions/fetchThings`);
 
 function App() {
   const [coffee, setCoffee] = useState(null);
+
   useEffect(() => {
     fetchCofee.then(({ data }) => setCoffee(data));
   }, []);
+
   return (
     <div className="App">
       <header className="App-header">
