@@ -1,20 +1,31 @@
 import { Handler } from "@netlify/functions";
-const axios = require("axios");
-var ccxt = require("ccxt");
+import stocks from "stocks.js";
 
-const API_ENDPOINT = "https://coffee.alexflipnote.dev/random.json";
+const API_KEY = "5SIWA2DDI2ZPTICC";
+
+const stocksClient = new stocks(API_KEY);
+
+const vooOptions = {
+  symbol: "VOO",
+  interval: "1min",
+  amount: 10,
+};
+
+const qqqOptions = {
+  symbol: "QQQ",
+  interval: "1min",
+  amount: 10,
+};
+
+const getVoo = async () => await new stocks(API_KEY).timeSeries(vooOptions);
+const getQqq = async () => await new stocks(API_KEY).timeSeries(qqqOptions);
+
 export const handler: Handler = async (event, context) => {
-  const hitbtc = new ccxt.hitbtc();
-
-  const bitcoin_ticker = await hitbtc.fetch_ticker("BTC/USDT");
-  // setBtc(bitcoin_ticker);
-  console.log("bitcoin_ticker", bitcoin_ticker);
-
   try {
-    const { data } = await axios.get(API_ENDPOINT);
+    const [voo, qqq] = await Promise.all([getVoo(), getQqq()]);
     return {
       statusCode: 200,
-      body: data.file,
+      body: JSON.stringify({ voo, qqq }),
     };
   } catch (error) {
     console.log(error);

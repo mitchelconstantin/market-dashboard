@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
+import { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
 
-const fetchCofee = () => axios.get(`./.netlify/functions/fetchThings`);
+const fetchStock = () => axios.get(`./.netlify/functions/fetchThings`);
 const fetchCrypto = () => axios.get(`./.netlify/functions/fetchMarketData`);
 
 function App() {
-  const [coffee, setCoffee] = useState(null);
+  const [stock, setStock] = useState<any>({});
   const [crypto, setCrypto] = useState<any>({});
 
   useEffect(() => {
-    fetchCofee().then(({ data }) => setCoffee(data));
+    fetchStock().then(({ data }) => setStock(data));
   }, []);
 
   useEffect(() => {
@@ -21,7 +20,9 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={coffee || logo} className="App-logo" alt="logo" />
+        <p>VOO: {`${stock.voo && stock.voo[0]?.open}`}</p>
+        <p>QQQ: {`${stock.qqq && stock.qqq[0]?.open}`}</p>
+
         <p>eth: {`${crypto?.eth?.last}`}</p>
         <p>btc: {`${crypto?.btc?.last}`}</p>
         <a
